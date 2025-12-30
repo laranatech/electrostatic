@@ -59,7 +59,7 @@ func ParsePageInfo(root string, f []byte) (Page, error) {
 	meta, err := NewMetaMap(root, parsedMeta)
 
 	if err != nil {
-		return Page{}, nil
+		return Page{}, err
 	}
 
 	return Page{

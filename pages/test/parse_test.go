@@ -18,8 +18,8 @@ func TestParsePageInfoMeta(t *testing.T) {
 	}
 
 	expected := map[string]string{
-		"title":       "What is larana",
-		"keywords":    "larana, gorana, framework",
+		"title":       "What is larana | Your site",
+		"keywords":    "larana, gorana, framework, your keywords",
 		"description": "some description",
 		"date":        "2025-01-01",
 	}
