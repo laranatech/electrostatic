@@ -7,11 +7,11 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/laranatech/electrostatic/pkg/content"
-	"github.com/laranatech/electrostatic/pkg/export"
-	"github.com/laranatech/electrostatic/pkg/pages"
-	"github.com/laranatech/electrostatic/pkg/sitemap"
-	"github.com/laranatech/electrostatic/pkg/static"
+	"github.com/laranatech/electrostatic/content"
+	"github.com/laranatech/electrostatic/export"
+	"github.com/laranatech/electrostatic/pages"
+	"github.com/laranatech/electrostatic/sitemap"
+	"github.com/laranatech/electrostatic/static"
 )
 
 func main() {

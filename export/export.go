@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/laranatech/electrostatic/pkg/pages"
+	"github.com/laranatech/electrostatic/pages"
 )
 
 func Export(root, dist string) error {

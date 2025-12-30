@@ -3,7 +3,7 @@ package pages_test
 import (
 	"testing"
 
-	"github.com/laranatech/electrostatic/pkg/pages"
+	"github.com/laranatech/electrostatic/pages"
 )
 
 func TestScanAllFilepaths(t *testing.T) {
