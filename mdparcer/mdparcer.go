@@ -13,6 +13,7 @@ import (
 	"github.com/gomarkdown/markdown"
 	mdHtml "github.com/gomarkdown/markdown/html"
 	"github.com/gomarkdown/markdown/parser"
+	"larana.tech/go/electrostatic/config"
 )
 
 type CodeBlock struct {
@@ -21,7 +22,7 @@ type CodeBlock struct {
 	Id   string
 }
 
-func MdToHTML(input []byte) []byte {
+func MdToHTML(input []byte, cfg *config.Config) []byte {
 	codeBlocks, md := ParseCodeBlocks(input)
 
 	// create markdown parser with extensions
@@ -30,11 +31,20 @@ func MdToHTML(input []byte) []byte {
 	doc := p.Parse(md)
 
 	// create HTML renderer with extensions
-	htmlFlags := mdHtml.CommonFlags | mdHtml.HrefTargetBlank | mdHtml.LazyLoadImages | mdHtml.NofollowLinks | mdHtml.NoreferrerLinks | mdHtml.NoopenerLinks
+	htmlFlags := mdHtml.CommonFlags | mdHtml.HrefTargetBlank | mdHtml.NofollowLinks | mdHtml.NoreferrerLinks | mdHtml.NoopenerLinks
+
+	if cfg.Laziness.Images {
+		htmlFlags = htmlFlags | mdHtml.LazyLoadImages
+	}
+
 	opts := mdHtml.RendererOptions{Flags: htmlFlags}
 	renderer := mdHtml.NewRenderer(opts)
 
 	h := markdown.Render(doc, renderer)
+
+	if !cfg.Laziness.FirstImage {
+		h = []byte(strings.Replace(string(h), "loading=\"lazy\"", "", 1))
+	}
 
 	return RenderCode(h, codeBlocks)
 }

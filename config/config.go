@@ -8,10 +8,21 @@ import (
 	"github.com/pelletier/go-toml/v2"
 )
 
+type Laziness struct {
+	Images     bool `toml:"lazy_images"`
+	FirstImage bool `toml:"lazy_first_image"`
+}
+
 type CatalogEntry struct {
-	Path      string `toml:"path"`
-	Title     string `tomt:"path"`
-	Directory string `toml:"directory"`
+	Path         string `toml:"path"`
+	Title        string `tomt:"path"`
+	Directory    string `toml:"directory"`
+	CardTemplate string `toml:"card_template"`
+}
+
+type Catalogs struct {
+	DefaultCardTemplate string         `toml:"default_card_template"`
+	Entries             []CatalogEntry `toml:"entries"`
 }
 
 type Meta struct {
@@ -24,10 +35,10 @@ type Meta struct {
 }
 
 type Config struct {
-	Catalogs struct {
-		Entries []CatalogEntry `toml:"entries"`
-	}
-	Meta Meta
+	DefaultTemplate string `toml:"default_template"`
+	Catalogs        Catalogs
+	Meta            Meta
+	Laziness        Laziness
 }
 
 func Read(root string) (*Config, error) {

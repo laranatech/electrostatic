@@ -27,6 +27,7 @@ func ParsePageInfo(root string, f []byte, cfg *config.Config) (Page, error) {
 			return Page{
 				Content: f,
 				Meta:    meta,
+				RawMeta: parsedMeta,
 			}, nil
 		}
 
@@ -67,5 +68,6 @@ func ParsePageInfo(root string, f []byte, cfg *config.Config) (Page, error) {
 	return Page{
 		Content: []byte(strings.Join(lines, "\n")),
 		Meta:    meta,
+		RawMeta: parsedMeta,
 	}, nil
 }

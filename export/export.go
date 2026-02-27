@@ -79,7 +79,7 @@ func exportPages(root, dist string, cfg *config.Config) error {
 			return err
 		}
 
-		formatted := pages.FormatTemplate(tmp, page)
+		formatted := pages.FormatTemplate(tmp, page, cfg)
 
 		newPath := strings.Replace(page.Filepath, root, dist, 1)
 		newPath = strings.Replace(newPath, ".md", ".html", 1)

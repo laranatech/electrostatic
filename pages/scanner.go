@@ -119,11 +119,24 @@ func FormatPageList(root string, entry *config.CatalogEntry, cfg *config.Config)
 		fmt.Sprintf("<h1>%s</h1>", entry.Title),
 	}
 
+	var tmpltPath string
+
+	if entry.CardTemplate != "" {
+		tmpltPath = path.Join(root, entry.CardTemplate)
+	} else {
+		tmpltPath = path.Join(root, cfg.Catalogs.DefaultCardTemplate)
+	}
+
+	tmplt, err := ReadTemplateFile(tmpltPath)
+
+	if err != nil {
+		return "", err
+	}
+
 	for _, v := range FilterUtilityPages(pages) {
-		route := path.Join(entry.Directory, v.Route)
 		links = append(
 			links,
-			fmt.Sprintf("<a href='%s'>%s</a>", route, v.Meta["title"]),
+			FormatCardTemplate(tmplt, &v, entry, cfg),
 		)
 	}
 
@@ -138,17 +151,21 @@ func FormatPageList(root string, entry *config.CatalogEntry, cfg *config.Config)
 	}
 
 	f := Page{
-		Content: []byte(strings.Join(links, "<br>")),
+		Content: []byte("%LINKS%"),
 		Meta:    meta,
 	}
 
-	tmp, err := ReadTemplateFile(root)
+	tmpltPath = path.Join(root, cfg.DefaultTemplate)
+
+	tmp, err := ReadTemplateFile(tmpltPath)
 
 	if err != nil {
 		return "", err
 	}
 
-	result := FormatTemplate(tmp, f)
+	result := FormatTemplate(tmp, f, cfg)
+
+	result = strings.Replace(result, "%LINKS%", strings.Join(links, ""), 1)
 
 	return result, nil
 }

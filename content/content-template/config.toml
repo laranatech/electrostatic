@@ -1,8 +1,17 @@
 [catalogs]
-entries = [
-	{ title = "Статьи", path = "/articles", directory = "/" },
-	{ title = "Посты", path = "/posts", directory = "/posts" },
-]
+default_card_template = "/_templates/link.html"
+
+[[catalogs.entries]]
+title = "Статьи"
+path = "/articles"
+directory = "/"
+card_template = "/_templates/article-card.html"
+
+[[catalogs.entries]]
+title = "Посты"
+path = "/posts"
+directory = "/posts"
+
 
 [meta]
 title_template = "%title% | Your site"
@@ -12,3 +21,7 @@ fallback_title = "Fallback title"
 fallback_description = "Fallback description"
 fallback_keywords = "Fallback keywords"
 
+
+[lazyness]
+images = true
+first_image = false
