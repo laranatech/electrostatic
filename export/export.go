@@ -1,11 +1,11 @@
 package export
 
 import (
-	"fmt"
+	"log"
 	"os"
 	"strings"
 
-	"github.com/laranatech/electrostatic/pages"
+	"larana.tech/go/electrostatic/pages"
 )
 
 func Export(root, dist string) error {
@@ -35,23 +35,15 @@ func Export(root, dist string) error {
 }
 
 func exportStatic(root, dist string) error {
-	fmt.Println("exporting static files...")
+	log.Println("Exporting static files...")
 
-	fmt.Println(dist)
+	log.Println("Destination directory: ", dist)
 
 	publicFs := os.DirFS(root + "/public")
 	err := os.CopyFS(dist+"/", publicFs)
 
 	if err != nil {
-		fmt.Println("Error while exporting `/public` directory:", err.Error())
-	}
-
-	assetsFs := os.DirFS(root + "/assets")
-	err = os.CopyFS(dist+"/assets", assetsFs)
-
-	if err != nil {
-		fmt.Println("Error while exporting `/assets` directory:", err.Error())
-		return err
+		log.Println("Error while exporting `/public` directory:", err.Error())
 	}
 
 	err = exportPagesList(root, dist)
@@ -64,7 +56,7 @@ func exportStatic(root, dist string) error {
 }
 
 func exportPages(root, dist string) error {
-	fmt.Println("exporting pages...")
+	log.Println("Exporting pages...")
 
 	paths, err := pages.ScanAllFilepaths(root)
 
@@ -107,7 +99,7 @@ func exportPages(root, dist string) error {
 }
 
 func exportPagesList(root, dist string) error {
-	fmt.Println("exporting pages list...")
+	log.Println("Exporting pages list...")
 
 	result, err := pages.FormatPageList(root)
 

@@ -5,7 +5,7 @@ Simple app to generate and serve static content.More info in
 
 ## Installation
 
-0. install the package `go install github.com/laranatech/electrostatic@latest`
+0. install the package `go install larana.tech/go/electrostatic@latest`
 0. initialize the project `electrostatic -m init -r /path/to/source`
 0. edit `template.html` and `meta.json` as you wish
 0. You are ready to go!
