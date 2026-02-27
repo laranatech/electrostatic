@@ -41,10 +41,12 @@ func ServePages(root string) {
 		}
 
 		if filepath == "" {
-			if err := serveStatic(root, w, r); err != nil {
-				log.Println(err)
+			err = serveStatic(root, w, r)
+			if err == nil {
 				return
 			}
+
+			log.Println(err)
 			w.WriteHeader(404)
 			return
 		}
