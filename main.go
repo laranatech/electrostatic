@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"larana.tech/go/electrostatic/config"
 	"larana.tech/go/electrostatic/content"
 	"larana.tech/go/electrostatic/export"
 	"larana.tech/go/electrostatic/pages"
@@ -24,26 +25,34 @@ func main() {
 		return
 	}
 
+	if *mode == "init" {
+		initRoot(*root)
+		return
+	}
+
+	cfg, err := config.Read(*root)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	switch *mode {
 	case "serve":
-		serve(*root, *port)
+		serve(*root, *port, cfg)
 		return
 	case "export":
-		exportSite(*root, *dist)
-		return
-	case "init":
-		initRoot(*root)
+		exportSite(*root, *dist, cfg)
 		return
 	}
 
 	log.Fatal("Invalid mode: ", *mode)
 }
 
-func serve(root, port string) {
+func serve(root, port string, cfg *config.Config) {
 	log.Println("Serving on", port)
 
-	sitemap.ServeSitemap()
-	pages.ServePages(root)
+	sitemap.ServeSitemap(cfg)
+	pages.ServePages(root, cfg)
 
 	err := http.ListenAndServe(port, nil)
 
@@ -52,12 +61,12 @@ func serve(root, port string) {
 	}
 }
 
-func exportSite(root, dist string) {
+func exportSite(root, dist string, cfg *config.Config) {
 	t0 := time.Now()
 
 	log.Println("exporting")
 
-	err := export.Export(root, dist)
+	err := export.Export(root, dist, cfg)
 
 	if err != nil {
 		log.Println(err)

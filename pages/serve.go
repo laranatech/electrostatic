@@ -7,21 +7,25 @@ import (
 	"os"
 	"path"
 	"strings"
+
+	"larana.tech/go/electrostatic/config"
 )
 
-func ServePages(root string) {
-	http.HandleFunc("/articles", func(w http.ResponseWriter, r *http.Request) {
-		result, err := FormatPageList(root)
+func ServePages(root string, cfg *config.Config) {
+	for _, entry := range cfg.Catalogs.Entries {
+		http.HandleFunc(entry.Path, func(w http.ResponseWriter, r *http.Request) {
+			result, err := FormatPageList(root, &entry, cfg)
 
-		if err != nil {
-			w.WriteHeader(500)
-			return
-		}
+			if err != nil {
+				w.WriteHeader(500)
+				return
+			}
 
-		w.WriteHeader(200)
-		w.Header().Add("Content-Type", "text/html")
-		w.Write([]byte(result))
-	})
+			w.WriteHeader(200)
+			w.Header().Add("Content-Type", "text/html")
+			w.Write([]byte(result))
+		})
+	}
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		paths, err := ScanAllFilepaths(root)
@@ -51,7 +55,7 @@ func ServePages(root string) {
 			return
 		}
 
-		page, err := ReadPageFile(root, filepath)
+		page, err := ReadPageFile(root, filepath, cfg)
 
 		if err != nil {
 			w.WriteHeader(500)

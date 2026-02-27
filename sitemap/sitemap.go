@@ -1,18 +1,20 @@
 package sitemap
 
 import (
-	"fmt"
+	"log"
 	"net/http"
+
+	"larana.tech/go/electrostatic/config"
 )
 
 const SitemapRoute = "/sitemap.xml"
 
-func ServeSitemap() {
+func ServeSitemap(cfg *config.Config) {
 	http.HandleFunc(SitemapRoute, func(w http.ResponseWriter, r *http.Request) {
 		// read content dir recursively
 		// add all entries
 		// markup xml
-		fmt.Println("Sitemap requested")
+		log.Println("Sitemap requested")
 
 		w.WriteHeader(404)
 	})

@@ -1,8 +1,0 @@
-{
-	"title_template": "%title% | Your site",
-	"description_template": "%description%",
-	"keywords_template": "%keywords%, your keywords",
-	"fallback_title": "Fallback title",
-	"fallback_description": "Fallback description",
-	"fallback_keywords": "Fallback keywords"
-}

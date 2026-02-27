@@ -3,29 +3,31 @@ package export
 import (
 	"log"
 	"os"
+	"path"
 	"strings"
 
+	"larana.tech/go/electrostatic/config"
 	"larana.tech/go/electrostatic/pages"
 )
 
-func Export(root, dist string) error {
+func Export(root, dist string, cfg *config.Config) error {
 	err := os.Mkdir(dist, 0755)
 
 	if err != nil {
 		if os.IsExist(err) {
 			os.RemoveAll(dist)
-			return Export(root, dist)
+			return Export(root, dist, cfg)
 		}
 		return err
 	}
 
-	err = exportStatic(root, dist)
+	err = exportStatic(root, dist, cfg)
 
 	if err != nil {
 		return err
 	}
 
-	err = exportPages(root, dist)
+	err = exportPages(root, dist, cfg)
 
 	if err != nil {
 		return err
@@ -34,7 +36,7 @@ func Export(root, dist string) error {
 	return nil
 }
 
-func exportStatic(root, dist string) error {
+func exportStatic(root, dist string, cfg *config.Config) error {
 	log.Println("Exporting static files...")
 
 	log.Println("Destination directory: ", dist)
@@ -46,7 +48,7 @@ func exportStatic(root, dist string) error {
 		log.Println("Error while exporting `/public` directory:", err.Error())
 	}
 
-	err = exportPagesList(root, dist)
+	err = exportPagesList(root, dist, cfg)
 
 	if err != nil {
 		return err
@@ -55,7 +57,7 @@ func exportStatic(root, dist string) error {
 	return nil
 }
 
-func exportPages(root, dist string) error {
+func exportPages(root, dist string, cfg *config.Config) error {
 	log.Println("Exporting pages...")
 
 	paths, err := pages.ScanAllFilepaths(root)
@@ -71,7 +73,7 @@ func exportPages(root, dist string) error {
 	}
 
 	for _, v := range paths {
-		page, err := pages.ReadPageFile(root, v)
+		page, err := pages.ReadPageFile(root, v, cfg)
 
 		if err != nil {
 			return err
@@ -98,16 +100,28 @@ func exportPages(root, dist string) error {
 	return nil
 }
 
-func exportPagesList(root, dist string) error {
+func exportPagesList(root, dist string, cfg *config.Config) error {
 	log.Println("Exporting pages list...")
 
-	result, err := pages.FormatPageList(root)
+	for _, entry := range cfg.Catalogs.Entries {
+		result, err := pages.FormatPageList(root, &entry, cfg)
 
-	if err != nil {
-		return err
+		if err != nil {
+			return err
+		}
+
+		distDir := path.Join(dist, entry.Path)
+
+		os.Mkdir(distDir, 0755)
+
+		distFile := path.Join(distDir, "/index.html")
+
+		err = os.WriteFile(distFile, []byte(result), 0666)
+
+		if err != nil {
+			return err
+		}
 	}
 
-	os.Mkdir(dist+"/articles", 0755)
-
-	return os.WriteFile(dist+"/articles/index.html", []byte(result), 0666)
+	return nil
 }
