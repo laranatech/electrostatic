@@ -25,6 +25,11 @@ func main() {
 		return
 	}
 
+	if *mode == "init" {
+		initRoot(*root)
+		return
+	}
+
 	cfg, err := config.Read(*root)
 
 	if err != nil {
@@ -37,9 +42,6 @@ func main() {
 		return
 	case "export":
 		exportSite(*root, *dist, cfg)
-		return
-	case "init":
-		initRoot(*root)
 		return
 	}
 
