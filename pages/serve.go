@@ -2,6 +2,7 @@ package pages
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -13,21 +14,6 @@ import (
 )
 
 func ServePages(root string, cfg *config.Config, hotreloadEnabled bool) {
-	for _, entry := range cfg.Catalogs.Entries {
-		http.HandleFunc(entry.Path, func(w http.ResponseWriter, r *http.Request) {
-			result, err := FormatPageList(root, &entry, cfg)
-
-			if err != nil {
-				w.WriteHeader(500)
-				return
-			}
-
-			w.WriteHeader(200)
-			w.Header().Add("Content-Type", "text/html")
-			w.Write([]byte(result))
-		})
-	}
-
 	if hotreloadEnabled {
 		wsHandler, err := hotreload.GetWSHandler(root)
 
@@ -39,11 +25,43 @@ func ServePages(root string, cfg *config.Config, hotreloadEnabled bool) {
 		http.HandleFunc("/ws", wsHandler)
 	}
 
+	for _, entry := range cfg.Catalogs.Entries {
+		http.HandleFunc(entry.Path, func(w http.ResponseWriter, r *http.Request) {
+			result, err := FormatPageList(root, &entry, cfg)
+
+			if err != nil {
+				log.Println(err)
+
+				err = serveError(root, w, r, 500, hotreloadEnabled, cfg)
+
+				if err != nil {
+					log.Fatal(err)
+				}
+				return
+			}
+
+			if hotreloadEnabled {
+				result = hotreload.Inject(result)
+			}
+
+			w.WriteHeader(200)
+			w.Header().Add("Content-Type", "text/html")
+			w.Write([]byte(result))
+		})
+	}
+
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		paths, err := ScanAllFilepaths(root)
 
 		if err != nil {
-			w.WriteHeader(500)
+			log.Println(err)
+
+			err = serveError(root, w, r, 500, hotreloadEnabled, cfg)
+
+			if err != nil {
+				log.Fatal(err)
+			}
+
 			return
 		}
 
@@ -63,14 +81,26 @@ func ServePages(root string, cfg *config.Config, hotreloadEnabled bool) {
 			}
 
 			log.Println(err)
-			w.WriteHeader(404)
+
+			err = serveError(root, w, r, 404, hotreloadEnabled, cfg)
+
+			if err != nil {
+				log.Fatal(err)
+			}
+
 			return
 		}
 
 		page, err := ReadPageFile(root, filepath, cfg)
 
 		if err != nil {
-			w.WriteHeader(500)
+			log.Println(err)
+			err = serveError(root, w, r, 500, hotreloadEnabled, cfg)
+
+			if err != nil {
+				log.Fatal(err)
+			}
+
 			return
 		}
 
@@ -79,7 +109,14 @@ func ServePages(root string, cfg *config.Config, hotreloadEnabled bool) {
 		tmp, err := ReadTemplateFile(tmpltPath)
 
 		if err != nil {
-			w.WriteHeader(500)
+			log.Println(err)
+
+			err = serveError(root, w, r, 500, hotreloadEnabled, cfg)
+
+			if err != nil {
+				log.Fatal(err)
+			}
+
 			return
 		}
 
@@ -121,6 +158,44 @@ func serveStatic(root string, w http.ResponseWriter, r *http.Request) error {
 	}
 
 	http.ServeFile(w, r, filePath)
+
+	return nil
+}
+
+func serveError(
+	root string,
+	w http.ResponseWriter,
+	r *http.Request,
+	errorCode int,
+	hotreloadEnabled bool,
+	cfg *config.Config,
+) error {
+	w.WriteHeader(errorCode)
+
+	filepath := path.Join(root, fmt.Sprintf("/%v.md", errorCode))
+
+	page, err := ReadPageFile(root, filepath, cfg)
+
+	if err != nil {
+		return err
+	}
+
+	tmpltPath := path.Join(root, cfg.DefaultTemplate)
+
+	tmp, err := ReadTemplateFile(tmpltPath)
+
+	if err != nil {
+		return err
+	}
+
+	result := FormatTemplate(tmp, page, cfg)
+
+	if hotreloadEnabled {
+		result = hotreload.Inject(result)
+	}
+
+	w.Header().Add("Content-Type", "text/html")
+	w.Write([]byte(result))
 
 	return nil
 }
