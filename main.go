@@ -2,16 +2,14 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"log"
 	"net/http"
 	"time"
 
-	"github.com/laranatech/electrostatic/content"
-	"github.com/laranatech/electrostatic/export"
-	"github.com/laranatech/electrostatic/pages"
-	"github.com/laranatech/electrostatic/sitemap"
-	"github.com/laranatech/electrostatic/static"
+	"larana.tech/go/electrostatic/content"
+	"larana.tech/go/electrostatic/export"
+	"larana.tech/go/electrostatic/pages"
+	"larana.tech/go/electrostatic/sitemap"
 )
 
 func main() {
@@ -22,7 +20,7 @@ func main() {
 	flag.Parse()
 
 	if *root == "" {
-		fmt.Println("You have to specify the content path with `-r` flag ")
+		log.Println("You have to specify the content path with `-r` flag ")
 		return
 	}
 
@@ -37,43 +35,42 @@ func main() {
 		initRoot(*root)
 	}
 
-	fmt.Println("Invalid mode:", mode)
+	log.Fatal("Invalid mode: ", *mode)
 }
 
 func serve(root, port string) {
-	fmt.Println("Serving on", port)
+	log.Println("Serving on", port)
 
 	sitemap.ServeSitemap()
-	static.ServeStatic(root)
 	pages.ServePages(root)
 
 	err := http.ListenAndServe(port, nil)
 
 	if err != nil {
-		log.Fatal(err.Error())
+		log.Fatal(err)
 	}
 }
 
 func exportSite(root, dist string) {
 	t0 := time.Now()
 
-	fmt.Println("exporting")
+	log.Println("exporting")
 
 	err := export.Export(root, dist)
 
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Println(err)
 		return
 	}
 
-	fmt.Println("done in", time.Since(t0))
+	log.Println("done in", time.Since(t0))
 }
 
 func initRoot(root string) {
 	t0 := time.Now()
 
-	fmt.Println("Init", root)
+	log.Println("Init", root)
 
 	content.InitializeContentTemplate(root)
-	fmt.Println("Done in", time.Since(t0))
+	log.Println("Done in", time.Since(t0))
 }

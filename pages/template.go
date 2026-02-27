@@ -4,7 +4,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/laranatech/electrostatic/mdparcer"
+	"larana.tech/go/electrostatic/mdparcer"
 )
 
 func ReadTemplateFile(root string) (string, error) {

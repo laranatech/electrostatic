@@ -3,7 +3,7 @@ package pages_test
 import (
 	"testing"
 
-	"github.com/laranatech/electrostatic/pages"
+	"larana.tech/go/electrostatic/pages"
 )
 
 func TestFormatFilepathtoUrl(t *testing.T) {

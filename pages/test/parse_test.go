@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/laranatech/electrostatic/pages"
+	"larana.tech/go/electrostatic/pages"
 )
 
 func TestParsePageInfoMeta(t *testing.T) {

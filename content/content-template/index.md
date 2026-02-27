@@ -4,7 +4,7 @@ description: Replace this
 keywords: Replace this
 ---
 
-![larana](/assets/favicon.ico)
+![larana](/favicon.ico)
 
 # Electrostatic
 

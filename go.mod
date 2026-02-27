@@ -1,4 +1,4 @@
-module github.com/laranatech/electrostatic
+module larana.tech/go/electrostatic
 
 go 1.25.1
 
