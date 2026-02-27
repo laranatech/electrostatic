@@ -74,14 +74,16 @@ func ServePages(root string, cfg *config.Config, hotreloadEnabled bool) {
 			return
 		}
 
-		tmp, err := ReadTemplateFile(root)
+		tmpltPath := path.Join(root, cfg.DefaultTemplate)
+
+		tmp, err := ReadTemplateFile(tmpltPath)
 
 		if err != nil {
 			w.WriteHeader(500)
 			return
 		}
 
-		result := FormatTemplate(tmp, page)
+		result := FormatTemplate(tmp, page, cfg)
 
 		if hotreloadEnabled {
 			result = hotreload.Inject(result)

@@ -5,6 +5,7 @@ type Page struct {
 	Filepath string
 	Route    string
 	Meta     map[string]string
+	RawMeta  map[string]string
 }
 
 type PageResponse struct {

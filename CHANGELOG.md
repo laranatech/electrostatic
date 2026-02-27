@@ -1,3 +1,8 @@
+# 0.1.7
+
+- feat: laziness config
+- feat: catalog templates
+
 # 0.1.6
 
 - fix: tests
