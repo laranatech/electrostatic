@@ -9,9 +9,10 @@ import (
 	"strings"
 
 	"larana.tech/go/electrostatic/config"
+	"larana.tech/go/electrostatic/pages/hotreload"
 )
 
-func ServePages(root string, cfg *config.Config) {
+func ServePages(root string, cfg *config.Config, hotreloadEnabled bool) {
 	for _, entry := range cfg.Catalogs.Entries {
 		http.HandleFunc(entry.Path, func(w http.ResponseWriter, r *http.Request) {
 			result, err := FormatPageList(root, &entry, cfg)
@@ -25,6 +26,17 @@ func ServePages(root string, cfg *config.Config) {
 			w.Header().Add("Content-Type", "text/html")
 			w.Write([]byte(result))
 		})
+	}
+
+	if hotreloadEnabled {
+		wsHandler, err := hotreload.GetWSHandler(root)
+
+		if err != nil {
+			log.Fatal(err)
+			return
+		}
+
+		http.HandleFunc("/ws", wsHandler)
 	}
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -70,6 +82,10 @@ func ServePages(root string, cfg *config.Config) {
 		}
 
 		result := FormatTemplate(tmp, page)
+
+		if hotreloadEnabled {
+			result = hotreload.Inject(result)
+		}
 
 		w.WriteHeader(200)
 		w.Header().Add("Content-Type", "text/html")

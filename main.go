@@ -18,6 +18,7 @@ func main() {
 	root := flag.String("r", "", "content directory path")
 	port := flag.String("p", ":3030", "Serving port for SSMG (SSR) mode")
 	dist := flag.String("d", "./dist", "Output directory")
+	hotreloadEnabled := flag.Bool("h", false, "enable hot reload")
 	flag.Parse()
 
 	if *root == "" {
@@ -38,7 +39,7 @@ func main() {
 
 	switch *mode {
 	case "serve":
-		serve(*root, *port, cfg)
+		serve(*root, *port, cfg, *hotreloadEnabled)
 		return
 	case "export":
 		exportSite(*root, *dist, cfg)
@@ -48,11 +49,11 @@ func main() {
 	log.Fatal("Invalid mode: ", *mode)
 }
 
-func serve(root, port string, cfg *config.Config) {
+func serve(root, port string, cfg *config.Config, hotreloadEnabled bool) {
 	log.Println("Serving on", port)
 
 	sitemap.ServeSitemap(cfg)
-	pages.ServePages(root, cfg)
+	pages.ServePages(root, cfg, hotreloadEnabled)
 
 	err := http.ListenAndServe(port, nil)
 
