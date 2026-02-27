@@ -4,6 +4,7 @@ import (
 	"os"
 	"testing"
 
+	"larana.tech/go/electrostatic/config"
 	"larana.tech/go/electrostatic/pages"
 )
 
@@ -24,7 +25,15 @@ func TestParsePageInfoMeta(t *testing.T) {
 		"date":        "2025-01-01",
 	}
 
-	result, err := pages.ParsePageInfo(root, f)
+	cfg := &config.Config{
+		Meta: config.Meta{
+			TitleTemplate:       "%title% | Your site",
+			DescriptionTemplate: "%description%",
+			KeywordsTemplate:    "%keywords%, your keywords",
+		},
+	}
+
+	result, err := pages.ParsePageInfo(root, f, cfg)
 
 	if err != nil {
 		t.Error(err.Error())
@@ -64,13 +73,15 @@ func TestParsePageInfoContent(t *testing.T) {
 
 	f2, err := os.ReadFile(root + "/no-meta-larana.md")
 
+	cfg := &config.Config{}
+
 	if err != nil {
 		t.Error(err.Error())
 		return
 	}
 
-	r1, _ := pages.ParsePageInfo(root, f1)
-	r2, _ := pages.ParsePageInfo(root, f2)
+	r1, _ := pages.ParsePageInfo(root, f1, cfg)
+	r2, _ := pages.ParsePageInfo(root, f2, cfg)
 
 	r1Content := string(r1.Content)
 	r2Content := string(r2.Content)

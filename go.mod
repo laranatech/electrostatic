@@ -5,6 +5,7 @@ go 1.25.1
 require (
 	github.com/alecthomas/chroma/v2 v2.20.0
 	github.com/gomarkdown/markdown v0.0.0-20250810172220-2e2c11897d1a
+	github.com/gorilla/websocket v1.5.3
 	github.com/pelletier/go-toml/v2 v2.2.4
 )
 

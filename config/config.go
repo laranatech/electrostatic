@@ -14,18 +14,20 @@ type CatalogEntry struct {
 	Directory string `toml:"directory"`
 }
 
+type Meta struct {
+	TitleTemplate       string `toml:"title_template"`
+	DescriptionTemplate string `toml:"description_template"`
+	KeywordsTemplate    string `toml:"keywords_template"`
+	FallbackTitle       string `toml:"fallback_title"`
+	FallbackDescription string `toml:"fallback_description"`
+	FallbackKeywords    string `toml:"fallback_keywords"`
+}
+
 type Config struct {
 	Catalogs struct {
 		Entries []CatalogEntry `toml:"entries"`
 	}
-	Meta struct {
-		TitleTemplate       string `toml:"title_template"`
-		DescriptionTemplate string `toml:"description_template"`
-		KeywordsTemplate    string `toml:"keywords_template"`
-		FallbackTitle       string `toml:"fallback_title"`
-		FallbackDescription string `toml:"fallback_description"`
-		FallbackKeywords    string `toml:"fallback_keywords"`
-	}
+	Meta Meta
 }
 
 func Read(root string) (*Config, error) {
