@@ -33,6 +33,7 @@ func main() {
 		return
 	case "init":
 		initRoot(*root)
+		return
 	}
 
 	log.Fatal("Invalid mode: ", *mode)
