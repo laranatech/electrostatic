@@ -3,8 +3,11 @@ package pages
 import (
 	"fmt"
 	"os"
+	"path"
 	"slices"
 	"strings"
+
+	"larana.tech/go/electrostatic/config"
 )
 
 func IsSkipped(name string) bool {
@@ -13,7 +16,7 @@ func IsSkipped(name string) bool {
 	return slices.Contains(skiplist, name)
 }
 
-func PreparePagesList(root string) ([]Page, error) {
+func PreparePagesList(root string, cfg *config.Config) ([]Page, error) {
 	paths, err := ScanAllFilepaths(root)
 
 	if err != nil {
@@ -23,7 +26,7 @@ func PreparePagesList(root string) ([]Page, error) {
 	pages := make([]Page, 0, len(paths))
 
 	for _, path := range paths {
-		p, err := ReadPageFile(root, path)
+		p, err := ReadPageFile(root, path, cfg)
 
 		if err != nil {
 			return []Page{}, err
@@ -49,14 +52,14 @@ func FilterUtilityPages(pages []Page) []Page {
 	return filtered
 }
 
-func ReadPageFile(root, path string) (Page, error) {
+func ReadPageFile(root, path string, cfg *config.Config) (Page, error) {
 	f, err := os.ReadFile(path)
 
 	if err != nil {
 		return Page{}, err
 	}
 
-	page, err := ParsePageInfo(root, f)
+	page, err := ParsePageInfo(root, f, cfg)
 
 	if err != nil {
 		return page, err
@@ -104,22 +107,31 @@ func ScanAllFilepaths(root string) ([]string, error) {
 	return paths, nil
 }
 
-func FormatPageList(root string) (string, error) {
-	pages, err := PreparePagesList(root)
+func FormatPageList(root string, entry *config.CatalogEntry, cfg *config.Config) (string, error) {
+	dirPath := path.Join(root, entry.Directory)
+	pages, err := PreparePagesList(dirPath, cfg)
 
 	if err != nil {
 		return "", err
 	}
 
-	links := []string{}
+	links := []string{
+		fmt.Sprintf("<h1>%s</h1>", entry.Title),
+	}
 
 	for _, v := range FilterUtilityPages(pages) {
-		links = append(links, fmt.Sprintf("<a href='%s'>%s</a>", v.Route, v.Meta["title"]))
+		route := path.Join(entry.Directory, v.Route)
+		links = append(
+			links,
+			fmt.Sprintf("<a href='%s'>%s</a>", route, v.Meta["title"]),
+		)
 	}
 
 	meta, err := NewMetaMap(root, map[string]string{
-		"title": "Список статей",
-	})
+		"title":       entry.Title,
+		"description": entry.Title,
+		"keywords":    entry.Title,
+	}, cfg)
 
 	if err != nil {
 		return "", err

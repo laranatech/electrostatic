@@ -3,6 +3,7 @@ package mdparcer
 import (
 	"bytes"
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/alecthomas/chroma/v2"
@@ -117,7 +118,7 @@ func RenderCode(h []byte, blocks []CodeBlock) []byte {
 		code, err := FormatCode(v)
 
 		if err != nil {
-			fmt.Println(err.Error())
+			log.Println(err)
 			continue
 		}
 

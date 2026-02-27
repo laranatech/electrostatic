@@ -3,9 +3,11 @@ package pages
 import (
 	"errors"
 	"strings"
+
+	"larana.tech/go/electrostatic/config"
 )
 
-func ParsePageInfo(root string, f []byte) (Page, error) {
+func ParsePageInfo(root string, f []byte, cfg *config.Config) (Page, error) {
 	parsedMeta := map[string]string{}
 
 	text := string(f)
@@ -16,7 +18,7 @@ func ParsePageInfo(root string, f []byte) (Page, error) {
 
 	for i, v := range strings.Split(text, "\n") {
 		if i == 0 && v != "---" {
-			meta, err := NewMetaMap(root, nil)
+			meta, err := NewMetaMap(root, nil, cfg)
 
 			if err != nil {
 				return Page{}, nil
@@ -56,7 +58,7 @@ func ParsePageInfo(root string, f []byte) (Page, error) {
 		parsedMeta[s[0]] = strings.Trim(strings.Join(s[1:], ":"), " ")
 	}
 
-	meta, err := NewMetaMap(root, parsedMeta)
+	meta, err := NewMetaMap(root, parsedMeta, cfg)
 
 	if err != nil {
 		return Page{}, err

@@ -1,42 +1,33 @@
 package pages
 
 import (
-	"encoding/json"
 	"maps"
-	"os"
 	"strings"
+
+	"larana.tech/go/electrostatic/config"
 )
 
-func ReadMetaConfig(root string) (MetaConfig, error) {
-	f, err := os.ReadFile(root + "/meta.json")
-
-	if err != nil {
-		return MetaConfig{}, err
-	}
-
-	config := MetaConfig{}
-
-	err = json.Unmarshal(f, &config)
-
-	if err != nil {
-		return MetaConfig{}, err
-	}
-
-	return config, nil
-}
-
-func NewMetaMap(root string, params map[string]string) (map[string]string, error) {
-	config, err := ReadMetaConfig(root)
-
-	if err != nil {
-		return map[string]string{}, err
-	}
-
+func NewMetaMap(root string, params map[string]string, cfg *config.Config) (map[string]string, error) {
 	meta := map[string]string{
-		"title":       strings.Replace(config.TitleTemplate, "%title%", config.FallbackTitle, 1),
-		"description": strings.Replace(config.DescriptionTemplate, "%description%", config.FallbackDescription, 1),
-		"keywords":    strings.Replace(config.KeywordsTemplate, "%keywords%", config.FallbackKeywords, 1),
-		"date":        "",
+		"title": strings.Replace(
+			cfg.Meta.TitleTemplate,
+			"%title%",
+			cfg.Meta.FallbackTitle,
+			1,
+		),
+		"description": strings.Replace(
+			cfg.Meta.DescriptionTemplate,
+			"%description%",
+			cfg.Meta.FallbackDescription,
+			1,
+		),
+		"keywords": strings.Replace(
+			cfg.Meta.KeywordsTemplate,
+			"%keywords%",
+			cfg.Meta.FallbackKeywords,
+			1,
+		),
+		"date": "",
 	}
 
 	maps.Copy(meta, params)
@@ -44,11 +35,26 @@ func NewMetaMap(root string, params map[string]string) (map[string]string, error
 	for key, value := range params {
 		switch key {
 		case "title":
-			meta["title"] = strings.Replace(config.TitleTemplate, "%title%", value, 1)
+			meta["title"] = strings.Replace(
+				cfg.Meta.TitleTemplate,
+				"%title%",
+				value,
+				1,
+			)
 		case "description":
-			meta["description"] = strings.Replace(config.DescriptionTemplate, "%description%", value, 1)
+			meta["description"] = strings.Replace(
+				cfg.Meta.DescriptionTemplate,
+				"%description%",
+				value,
+				1,
+			)
 		case "keywords":
-			meta["keywords"] = strings.Replace(config.KeywordsTemplate, "%keywords%", value, 1)
+			meta["keywords"] = strings.Replace(
+				cfg.Meta.KeywordsTemplate,
+				"%keywords%",
+				value,
+				1,
+			)
 		}
 	}
 
