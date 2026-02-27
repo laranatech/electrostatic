@@ -1,3 +1,7 @@
+# 0.1.8
+
+- fix: lazy first image
+
 # 0.1.7
 
 - feat: laziness config
@@ -6,7 +10,7 @@
 # 0.1.6
 
 - fix: tests
-- feat: hot reaload
+- feat: hot reload
 - changelog
 
 # 0.1.5

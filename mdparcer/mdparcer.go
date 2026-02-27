@@ -43,7 +43,7 @@ func MdToHTML(input []byte, cfg *config.Config) []byte {
 	h := markdown.Render(doc, renderer)
 
 	if !cfg.Laziness.FirstImage {
-		h = []byte(strings.Replace(string(h), "loading=\"lazy\"", "", 1))
+		h = []byte(strings.Replace(string(h), `loading="lazy"`, "", 1))
 	}
 
 	return RenderCode(h, codeBlocks)
