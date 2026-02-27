@@ -1,3 +1,5 @@
+default_template = "/_templates/index.html"
+
 [catalogs]
 default_card_template = "/_templates/link.html"
 

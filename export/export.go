@@ -66,7 +66,7 @@ func exportPages(root, dist string, cfg *config.Config) error {
 		return err
 	}
 
-	tmp, err := pages.ReadTemplateFile(root)
+	tmp, err := pages.ReadTemplateFile(path.Join(root, cfg.DefaultTemplate))
 
 	if err != nil {
 		return err

@@ -1,3 +1,9 @@
+# 0.1.9
+
+- fix: export
+- feat: hot reload for catalog pages
+- feat: error pages in serve mode
+
 # 0.1.8
 
 - fix: lazy first image
