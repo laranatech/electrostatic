@@ -34,8 +34,8 @@ var cfg = &config.Config{
 
 func TestFormatMetaTags(t *testing.T) {
 	expected := `<title>title | Sitename</title>
-<meta name="keywords" value="key 1, key 2, key 3, key 4" />
-<meta name="description" value="test description" />`
+<meta name="keywords" content="key 1, key 2, key 3, key 4" />
+<meta name="description" content="test description" />`
 
 	raw := map[string]string{
 		"title":       "title",
@@ -58,8 +58,8 @@ func TestFormatMetaTags(t *testing.T) {
 
 func TestFormatMetaTagsFallbacks(t *testing.T) {
 	expected := `<title>No title | Sitename</title>
-<meta name="keywords" value="key 1, key 2, key 3, key 4" />
-<meta name="description" value="No description" />`
+<meta name="keywords" content="key 1, key 2, key 3, key 4" />
+<meta name="description" content="No description" />`
 
 	raw := map[string]string{
 		"keywords": "key 1, key 2",

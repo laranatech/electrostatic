@@ -97,7 +97,7 @@ func Format(tags map[string]string, cfg *config.Config) string {
 		case "title":
 			r = fmt.Sprintf("<title>%s</title>", r)
 		default: // aka "meta"
-			r = fmt.Sprintf(`<meta name="%s" value="%s" />`, v.Key, r)
+			r = fmt.Sprintf(`<meta name="%s" content="%s" />`, v.Key, r)
 		}
 
 		res = append(res, r)

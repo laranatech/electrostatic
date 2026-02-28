@@ -38,6 +38,11 @@ template = "%s"
 fallback = "No description"
 tag = "meta"
 
+[[meta.tags]]
+key = "date"
+template = "%s"
+fallback = ""
+tag = "meta"
 
 [lazyness]
 images = true
