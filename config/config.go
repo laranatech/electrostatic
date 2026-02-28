@@ -14,28 +14,34 @@ type Laziness struct {
 }
 
 type CatalogEntry struct {
-	Path         string `toml:"path"`
-	Title        string `tomt:"path"`
-	Directory    string `toml:"directory"`
-	CardTemplate string `toml:"card_template"`
+	Path            string `toml:"path"`
+	Title           string `tomt:"path"`
+	Directory       string `toml:"directory"`
+	CatalogTemplate string `toml:"catalog_template"`
+	CardTemplate    string `toml:"card_template"`
 }
 
 type Catalogs struct {
-	DefaultCardTemplate string         `toml:"default_card_template"`
-	Entries             []CatalogEntry `toml:"entries"`
+	DefaultCardTemplate    string         `toml:"default_card_template"`
+	DefaultCatalogTemplate string         `toml:"default_catalog_template"`
+	Entries                []CatalogEntry `toml:"entries"`
+}
+
+type MetaTag struct {
+	Key      string `toml:"key"`
+	Template string `toml:"template"`
+	Fallback string `toml:"fallback"`
+	Tag      string `toml:"tag"`
 }
 
 type Meta struct {
-	TitleTemplate       string `toml:"title_template"`
-	DescriptionTemplate string `toml:"description_template"`
-	KeywordsTemplate    string `toml:"keywords_template"`
-	FallbackTitle       string `toml:"fallback_title"`
-	FallbackDescription string `toml:"fallback_description"`
-	FallbackKeywords    string `toml:"fallback_keywords"`
+	Tags []MetaTag `toml:"tags"`
 }
 
 type Config struct {
 	DefaultTemplate string `toml:"default_template"`
+	Hotreload       bool   `toml:"hotreload"`
+	Debug           bool   `toml:"debug"`
 	Catalogs        Catalogs
 	Meta            Meta
 	Laziness        Laziness

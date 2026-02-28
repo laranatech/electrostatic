@@ -1,9 +1,9 @@
-package pages_test
+package app_test
 
 import (
 	"testing"
 
-	"larana.tech/go/electrostatic/pages"
+	"larana.tech/go/electrostatic/app"
 )
 
 func TestScanAllFilepaths(t *testing.T) {
@@ -19,7 +19,7 @@ func TestScanAllFilepaths(t *testing.T) {
 		root + "/no-meta-larana.md",
 	}
 
-	result, err := pages.ScanAllFilepaths(root)
+	result, err := app.ScanAllFilepaths(root)
 
 	if err != nil {
 		t.Error(err.Error())

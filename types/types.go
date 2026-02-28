@@ -1,11 +1,10 @@
-package pages
+package types
 
 type Page struct {
 	Content  []byte
 	Filepath string
 	Route    string
 	Meta     map[string]string
-	RawMeta  map[string]string
 }
 
 type PageResponse struct {
