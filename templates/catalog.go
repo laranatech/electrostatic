@@ -87,7 +87,7 @@ func FormatCardTemplate(
 	entry *config.CatalogEntry,
 	cfg *config.Config,
 ) string {
-	route := path.Join(entry.Directory, page.Route)
+	// route := path.Join(entry.Directory,page.Route)
 
 	text := tmplt
 
@@ -95,7 +95,7 @@ func FormatCardTemplate(
 		text = strings.Replace(text, "%"+k+"%", v, 1)
 	}
 
-	text = strings.Replace(text, "%link%", route, 1)
+	text = strings.Replace(text, "%link%", page.Route, 1)
 
-	return tmplt
+	return text
 }

@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"larana.tech/go/electrostatic/templates"
-	"larana.tech/go/electrostatic/types"
 )
 
 func (a *App) Export() error {
@@ -104,8 +103,11 @@ func (a *App) ExportPagesList() error {
 	log.Println("Exporting pages list...")
 
 	for _, entry := range a.Cfg.Catalogs.Entries {
-		// TODO
-		pages := make([]*types.Page, 0, 100)
+		pages, err := a.ScanCatalogPages(&entry)
+
+		if err != nil {
+			return err
+		}
 
 		result, err := templates.FormatCatalogPage(a.Root, &entry, pages, a.Cfg)
 

@@ -10,7 +10,6 @@ import (
 
 	"larana.tech/go/electrostatic/app/hotreload"
 	"larana.tech/go/electrostatic/templates"
-	"larana.tech/go/electrostatic/types"
 )
 
 func (a *App) ServePages() {
@@ -27,8 +26,16 @@ func (a *App) ServePages() {
 
 	for _, entry := range a.Cfg.Catalogs.Entries {
 		http.HandleFunc(entry.Path, func(w http.ResponseWriter, r *http.Request) {
-			// TODO: catalog
-			pages := make([]*types.Page, 0, 100)
+			pages, err := a.ScanCatalogPages(&entry)
+
+			if err != nil {
+				log.Println(err)
+				err = a.RespondWithError(w, r, 500)
+				if err != nil {
+					log.Fatal(err)
+				}
+				return
+			}
 
 			result, err := templates.FormatCatalogPage(a.Root, &entry, pages, a.Cfg)
 
@@ -145,6 +152,16 @@ func (a *App) ServeStatic(w http.ResponseWriter, r *http.Request) error {
 	filePath := path.Join(a.Root, "/public", cleanPath)
 
 	info, err := os.Stat(filePath)
+
+	if errors.Is(err, os.ErrNotExist) {
+		info, err = os.Stat(filePath + ".html")
+
+		if err == nil {
+			http.ServeFile(w, r, filePath+".html")
+			return nil
+		}
+	}
+
 	if err != nil {
 		return err
 	}
