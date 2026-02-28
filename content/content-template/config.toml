@@ -1,6 +1,9 @@
 default_template = "/_templates/index.html"
+hotreload = false
+debug = false
 
 [catalogs]
+default_catalog_template = "/_templates/index.html"
 default_card_template = "/_templates/link.html"
 
 [[catalogs.entries]]
@@ -16,13 +19,30 @@ directory = "/posts"
 
 
 [meta]
-title_template = "%title% | Your site"
-description_template = "%description%"
-keywords_template = "%keywords%, your keywords"
-fallback_title = "Fallback title"
-fallback_description = "Fallback description"
-fallback_keywords = "Fallback keywords"
 
+[[meta.tags]]
+key = "title"
+template = "%s | Sitename"
+fallback = "No title"
+tag = "title"
+
+[[meta.tags]]
+key = "keywords"
+template = "%s, electrostatic"
+fallback = "No keywords"
+tag = "meta"
+
+[[meta.tags]]
+key = "description"
+template = "%s"
+fallback = "No description"
+tag = "meta"
+
+[[meta.tags]]
+key = "date"
+template = "%s"
+fallback = ""
+tag = "meta"
 
 [lazyness]
 images = true

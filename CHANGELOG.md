@@ -1,3 +1,9 @@
+# 0.2.0
+
+- feat: users now can create any amount of custom meta-tags, with
+different templates, fallbacks and even tags.
+- refactor: changed project's structure
+
 # 0.1.9
 
 - fix: export
