@@ -1,3 +1,10 @@
+# 0.2.1
+
+- feat: `-v` or `--version` flag to show current version
+- feat: `-h` or `--help` flag to print docs url
+- feat: some debug messages
+- refactor: `parseArgs` func
+
 # 0.2.0
 
 - feat: users now can create any amount of custom meta-tags, with

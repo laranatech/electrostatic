@@ -3,6 +3,7 @@ package templates
 import (
 	"bytes"
 	"html/template"
+	"log"
 	"maps"
 	"path"
 	"strings"
@@ -104,6 +105,10 @@ func FormatCardTemplate(
 ) (string, error) {
 	m := map[string]string{
 		"route": page.Route,
+	}
+
+	if cfg.Debug {
+		log.Println("[DEBUG] ", page.Route)
 	}
 
 	maps.Copy(m, page.Meta)

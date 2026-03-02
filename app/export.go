@@ -110,6 +110,8 @@ func (a *App) ExportPagesList() error {
 	log.Println("Exporting pages list...")
 
 	for _, entry := range a.Cfg.Catalogs.Entries {
+		log.Println("Exporting catalog: ", entry.Path)
+
 		pages, err := a.ScanCatalogPages(&entry)
 
 		if err != nil {
