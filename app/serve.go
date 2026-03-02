@@ -2,6 +2,7 @@ package app
 
 import (
 	"errors"
+	"html/template"
 	"log"
 	"net/http"
 	"os"
@@ -130,7 +131,21 @@ func (a *App) ServePages() {
 			return
 		}
 
-		result := templates.FormatTemplate(tmp, page, a.Cfg)
+		t := template.Must(template.New("page").Parse(tmp))
+
+		result, err := templates.FormatPage(t, page, a.Cfg)
+
+		if err != nil {
+			log.Println(err)
+
+			err = a.RespondWithError(w, r, 500)
+
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			return
+		}
 
 		if a.Cfg.Hotreload {
 			result = hotreload.Inject(result)

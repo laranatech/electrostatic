@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"html/template"
 	"net/http"
 	"path"
 
@@ -32,7 +33,9 @@ func (a *App) RespondWithError(
 		return err
 	}
 
-	result := templates.FormatTemplate(tmp, page, a.Cfg)
+	t := template.Must(template.New("page").Parse(tmp))
+
+	result, err := templates.FormatPage(t, page, a.Cfg)
 
 	if a.Cfg.Hotreload {
 		result = hotreload.Inject(result)

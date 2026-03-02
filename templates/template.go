@@ -1,8 +1,9 @@
 package templates
 
 import (
+	"bytes"
+	"html/template"
 	"os"
-	"strings"
 
 	"larana.tech/go/electrostatic/config"
 	"larana.tech/go/electrostatic/mdparcer"
@@ -21,15 +22,23 @@ func Read(filepath string) (string, error) {
 	return string(f), nil
 }
 
-func FormatTemplate(tmplt string, f *types.Page, cfg *config.Config) string {
-	text := tmplt
+func FormatPage(
+	t *template.Template,
+	p *types.Page,
+	cfg *config.Config,
+) (string, error) {
+	content := p.Content
 
-	mt := meta.Format(f.Meta, cfg)
+	content = mdparcer.MdToHTML(content, cfg)
 
-	text = strings.Replace(text, "%META%", mt, 1)
+	m := map[string]template.HTML{
+		"content": template.HTML(content),
+		"meta":    template.HTML(meta.Format(p.Meta, cfg)),
+	}
 
-	html := mdparcer.MdToHTML(f.Content, cfg)
-	text = strings.Replace(text, "%CONTENT%", string(html), 1)
+	var buf bytes.Buffer
 
-	return text
+	err := t.Execute(&buf, m)
+
+	return buf.String(), err
 }

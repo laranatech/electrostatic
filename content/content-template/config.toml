@@ -1,4 +1,5 @@
 default_template = "/_templates/index.html"
+snippets_directory = "/_templates/_snippets/"
 hotreload = false
 debug = false
 
@@ -9,7 +10,7 @@ default_card_template = "/_templates/link.html"
 [[catalogs.entries]]
 title = "Статьи"
 path = "/articles"
-directory = "/"
+directory = "/articles"
 card_template = "/_templates/article-card.html"
 
 [[catalogs.entries]]

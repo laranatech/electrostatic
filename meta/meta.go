@@ -31,7 +31,7 @@ func Parse(text string) (ParsingResult, error) {
 			continue
 		}
 
-		if v == "---" {
+		if v == "---" && !closed {
 			closed = true
 			continue
 		}

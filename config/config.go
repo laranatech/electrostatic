@@ -39,12 +39,13 @@ type Meta struct {
 }
 
 type Config struct {
-	DefaultTemplate string `toml:"default_template"`
-	Hotreload       bool   `toml:"hotreload"`
-	Debug           bool   `toml:"debug"`
-	Catalogs        Catalogs
-	Meta            Meta
-	Laziness        Laziness
+	DefaultTemplate   string `toml:"default_template"`
+	SnippetsDirectory string `toml:"snippets_directory"`
+	Hotreload         bool   `toml:"hotreload"`
+	Debug             bool   `toml:"debug"`
+	Catalogs          Catalogs
+	Meta              Meta
+	Laziness          Laziness
 }
 
 func Read(root string) (*Config, error) {

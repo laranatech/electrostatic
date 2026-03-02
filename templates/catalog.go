@@ -1,10 +1,14 @@
 package templates
 
 import (
+	"bytes"
+	"html/template"
+	"maps"
 	"path"
 	"strings"
 
 	"larana.tech/go/electrostatic/config"
+	"larana.tech/go/electrostatic/meta"
 	"larana.tech/go/electrostatic/types"
 )
 
@@ -26,11 +30,6 @@ func FormatCatalogPage(
 		"keywords":    entry.Title,
 	}
 
-	page := &types.Page{
-		Content: []byte("%LINKS%"),
-		Meta:    m,
-	}
-
 	var tmpltPath string
 
 	if entry.CatalogTemplate != "" {
@@ -39,17 +38,22 @@ func FormatCatalogPage(
 		tmpltPath = path.Join(root, cfg.DefaultTemplate)
 	}
 
-	tmp, err := Read(tmpltPath)
+	f, err := Read(tmpltPath)
 
 	if err != nil {
 		return "", err
 	}
 
-	result := FormatTemplate(tmp, page, cfg)
+	t := template.Must(template.New("catalog").Parse(f))
 
-	result = strings.Replace(result, "%LINKS%", strings.Join(links, ""), 1)
+	var result bytes.Buffer
 
-	return result, nil
+	err = t.Execute(&result, map[string]template.HTML{
+		"content": template.HTML(strings.Join(links, "")),
+		"meta":    template.HTML(meta.Format(m, cfg)),
+	})
+
+	return result.String(), err
 }
 
 func FormatCatalogList(
@@ -66,7 +70,13 @@ func FormatCatalogList(
 		tmpltPath = path.Join(root, cfg.Catalogs.DefaultCardTemplate)
 	}
 
-	tmplt, err := Read(tmpltPath)
+	f, err := Read(tmpltPath)
+
+	if err != nil {
+		return nil, err
+	}
+
+	t, err := template.New("card").Parse(f)
 
 	if err != nil {
 		return nil, err
@@ -75,27 +85,32 @@ func FormatCatalogList(
 	list := make([]string, 0, 100)
 
 	for _, p := range pages {
-		list = append(list, FormatCardTemplate(tmplt, p, entry, cfg))
+		l, err := FormatCardTemplate(t, p, cfg)
+
+		if err != nil {
+			return nil, err
+		}
+
+		list = append(list, l)
 	}
 
 	return list, nil
 }
 
 func FormatCardTemplate(
-	tmplt string,
+	t *template.Template,
 	page *types.Page,
-	entry *config.CatalogEntry,
 	cfg *config.Config,
-) string {
-	// route := path.Join(entry.Directory,page.Route)
-
-	text := tmplt
-
-	for k, v := range page.Meta {
-		text = strings.Replace(text, "%"+k+"%", v, 1)
+) (string, error) {
+	m := map[string]string{
+		"route": page.Route,
 	}
 
-	text = strings.Replace(text, "%link%", page.Route, 1)
+	maps.Copy(m, page.Meta)
 
-	return text
+	var buf bytes.Buffer
+
+	err := t.Execute(&buf, m)
+
+	return buf.String(), err
 }

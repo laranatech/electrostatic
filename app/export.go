@@ -1,6 +1,7 @@
 package app
 
 import (
+	"html/template"
 	"log"
 	"os"
 	"path"
@@ -71,6 +72,8 @@ func (a *App) ExportPages() error {
 		return err
 	}
 
+	t := template.Must(template.New("page").Parse(tmp))
+
 	for _, v := range paths {
 		page, err := ReadPageFile(a.Root, v, a.Cfg)
 
@@ -78,7 +81,11 @@ func (a *App) ExportPages() error {
 			return err
 		}
 
-		formatted := templates.FormatTemplate(tmp, page, a.Cfg)
+		formatted, err := templates.FormatPage(t, page, a.Cfg)
+
+		if err != nil {
+			return err
+		}
 
 		newPath := strings.Replace(page.Filepath, a.Root, a.Dist, 1)
 		newPath = strings.Replace(newPath, ".md", ".html", 1)
