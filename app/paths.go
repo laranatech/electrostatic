@@ -2,14 +2,18 @@ package app
 
 import "strings"
 
-func FormatFilepathToRoute(root, path string) string {
-	path = strings.Replace(path, root, "", 1)
-	path = strings.Replace(path, "/index.md", "", 1)
-	path = strings.Replace(path, ".md", "", 1)
+func FormatFilepathToRoute(root, pth string) string {
+	pth = strings.Replace(pth, root, "", 1)
+	pth = strings.Replace(pth, "/index.md", "", 1)
+	pth = strings.Replace(pth, ".md", "", 1)
 
-	if path == "" {
+	if pth == "" {
 		return "/"
 	}
 
-	return path
+	if pth[0] != '/' {
+		pth = "/" + pth
+	}
+
+	return pth
 }

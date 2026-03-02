@@ -1,3 +1,7 @@
+# 0.2.2
+
+- fix: leading slash for urls in CI
+
 # 0.2.1
 
 - feat: `-v` or `--version` flag to show current version
