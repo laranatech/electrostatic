@@ -25,7 +25,7 @@ func main() {
 	args := parseArgs()
 
 	if args.Version {
-		fmt.Println("0.2.1")
+		fmt.Println("0.2.2")
 		return
 	}
 
