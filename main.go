@@ -3,14 +3,11 @@ package main
 import (
 	"flag"
 	"log"
-	"net/http"
 	"time"
 
+	"larana.tech/go/electrostatic/app"
 	"larana.tech/go/electrostatic/config"
 	"larana.tech/go/electrostatic/content"
-	"larana.tech/go/electrostatic/export"
-	"larana.tech/go/electrostatic/pages"
-	"larana.tech/go/electrostatic/sitemap"
 )
 
 func main() {
@@ -27,7 +24,7 @@ func main() {
 	}
 
 	if *mode == "init" {
-		initRoot(*root)
+		InitRoot(*root)
 		return
 	}
 
@@ -37,51 +34,29 @@ func main() {
 		log.Fatal(err)
 	}
 
+	if *hotreloadEnabled {
+		cfg.Hotreload = *hotreloadEnabled
+	}
+
+	a := app.New(*root, *port, *dist, cfg)
+
 	switch *mode {
 	case "serve":
-		serve(*root, *port, cfg, *hotreloadEnabled)
+		a.Serve()
 		return
 	case "export":
-		exportSite(*root, *dist, cfg)
+		a.ExportSite()
 		return
 	}
 
 	log.Fatal("Invalid mode: ", *mode)
 }
 
-func serve(root, port string, cfg *config.Config, hotreloadEnabled bool) {
-	log.Println("Serving on", port)
-
-	sitemap.ServeSitemap(cfg)
-	pages.ServePages(root, cfg, hotreloadEnabled)
-
-	err := http.ListenAndServe(port, nil)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
-func exportSite(root, dist string, cfg *config.Config) {
-	t0 := time.Now()
-
-	log.Println("exporting")
-
-	err := export.Export(root, dist, cfg)
-
-	if err != nil {
-		log.Println(err)
-		return
-	}
-
-	log.Println("done in", time.Since(t0))
-}
-
-func initRoot(root string) {
+func InitRoot(root string) {
 	t0 := time.Now()
 
 	log.Println("Init", root)
 
-	content.InitializeContentTemplate(root)
+	content.InitializeTemplate(root)
 	log.Println("Done in", time.Since(t0))
 }

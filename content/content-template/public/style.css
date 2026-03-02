@@ -119,10 +119,12 @@ summary {
 }
 
 .article-card {
-	display: block;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
 	background: var(--bg-light);
 	border-radius: 0.5rem;
-	padding: 0.5rem 2rem;
+	padding: 1rem;
 	margin-top: 0.5rem;
 	text-decoration: none;
 	border: 1px solid transparent;
@@ -132,7 +134,7 @@ summary {
 	border: 1px solid var(--border);
 }
 
-.article-card p {
+.article-card span {
 	color: var(--text);
 }
 

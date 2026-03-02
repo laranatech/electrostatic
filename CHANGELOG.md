@@ -1,3 +1,10 @@
+# 0.2.0
+
+- feat: users now can create any amount of custom meta-tags, with
+different templates, fallbacks and even tags.
+- refactor: changed project's structure
+- refactor: migrated from `strings.Replace()` to `fmt.Sprintf()` and `html/template`
+
 # 0.1.9
 
 - fix: export

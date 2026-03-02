@@ -9,7 +9,7 @@ import (
 //go:embed content-template/*
 var ContentTemplateFs embed.FS
 
-func InitializeContentTemplate(root string) {
+func InitializeTemplate(root string) {
 	var f, _ = fs.Sub(ContentTemplateFs, "content-template")
 	os.CopyFS(root, f)
 }

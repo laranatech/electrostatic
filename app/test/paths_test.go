@@ -1,9 +1,9 @@
-package pages_test
+package app_test
 
 import (
 	"testing"
 
-	"larana.tech/go/electrostatic/pages"
+	"larana.tech/go/electrostatic/app"
 )
 
 func TestFormatFilepathtoUrl(t *testing.T) {
@@ -18,7 +18,7 @@ func TestFormatFilepathtoUrl(t *testing.T) {
 	}
 
 	for filepath, expected := range data {
-		formatted := pages.FormatFilepathToRoute(root, filepath)
+		formatted := app.FormatFilepathToRoute(root, filepath)
 
 		if formatted != expected {
 			t.Errorf("Wrong output for `%s`, expected `%s`, result is `%s` ", filepath, expected, formatted)
