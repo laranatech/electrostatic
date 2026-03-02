@@ -1,3 +1,7 @@
+# 0.2.3
+
+- fix: path resolving when root is `,`
+
 # 0.2.2
 
 - fix: leading slash for urls in CI
