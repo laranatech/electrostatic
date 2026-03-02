@@ -4,6 +4,8 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"path"
+	"path/filepath"
 	"time"
 
 	"larana.tech/go/electrostatic/app"
@@ -25,7 +27,7 @@ func main() {
 	args := parseArgs()
 
 	if args.Version {
-		fmt.Println("0.2.2")
+		fmt.Println("0.2.3")
 		return
 	}
 
@@ -88,11 +90,17 @@ func parseArgs() Args {
 
 	flag.Parse()
 
+	exPath, err := filepath.Abs("./")
+	if err != nil {
+		panic(err)
+	}
+	pth := path.Join(exPath, *root)
+
 	return Args{
 		Help:      h,
 		Version:   v,
 		Hotreload: hr,
-		Root:      *root,
+		Root:      pth,
 		Mode:      *mode,
 		Port:      *port,
 		Dist:      *dist,
