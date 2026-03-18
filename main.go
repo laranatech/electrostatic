@@ -13,21 +13,11 @@ import (
 	"larana.tech/go/electrostatic/content"
 )
 
-type Args struct {
-	Version   bool
-	Help      bool
-	Hotreload bool
-	Root      string
-	Mode      string
-	Port      string
-	Dist      string
-}
-
 func main() {
 	args := parseArgs()
 
 	if args.Version {
-		fmt.Println("0.2.3")
+		fmt.Println("0.2.4")
 		return
 	}
 
@@ -56,7 +46,7 @@ func main() {
 		cfg.Hotreload = args.Hotreload
 	}
 
-	a := app.New(args.Root, args.Port, args.Dist, cfg)
+	a := app.New(args, cfg)
 
 	switch args.Mode {
 	case "serve":
@@ -70,7 +60,7 @@ func main() {
 	log.Fatal("Invalid mode: ", args.Mode)
 }
 
-func parseArgs() Args {
+func parseArgs() *app.Args {
 	mode := flag.String("m", "export", "electrostatic mode. Can be `init`, `serve` or `export`(default)")
 	root := flag.String("r", "", "content directory path")
 	port := flag.String("p", ":3030", "Serving port for SSMG (SSR) mode")
@@ -79,6 +69,10 @@ func parseArgs() Args {
 	var v bool
 	flag.BoolVar(&v, "v", false, "version")
 	flag.BoolVar(&v, "version", false, "version")
+
+	var a bool
+	flag.BoolVar(&a, "a", false, "archive")
+	flag.BoolVar(&a, "archive", false, "archive")
 
 	var h bool
 	flag.BoolVar(&h, "h", false, "help")
@@ -96,10 +90,11 @@ func parseArgs() Args {
 	}
 	pth := path.Join(exPath, *root)
 
-	return Args{
+	return &app.Args{
 		Help:      h,
 		Version:   v,
 		Hotreload: hr,
+		Archive:   a,
 		Root:      pth,
 		Mode:      *mode,
 		Port:      *port,
