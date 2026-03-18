@@ -8,21 +8,34 @@ import (
 	"larana.tech/go/electrostatic/config"
 )
 
+type Args struct {
+	Version   bool
+	Help      bool
+	Hotreload bool
+	Archive   bool
+	Root      string
+	Mode      string
+	Port      string
+	Dist      string
+}
+
 type App struct {
 	Root string
 	Port string
 	Dist string
+	Args *Args
 	Cfg  *config.Config
 }
 
 func New(
-	root, port, dist string,
+	args *Args,
 	cfg *config.Config,
 ) *App {
 	a := &App{
-		Root: root,
-		Port: port,
-		Dist: dist,
+		Args: args,
+		Root: args.Root,
+		Port: args.Port,
+		Dist: args.Dist,
 		Cfg:  cfg,
 	}
 

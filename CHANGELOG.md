@@ -1,3 +1,7 @@
+# 0.2.4
+
+- feat: create archive
+
 # 0.2.3
 
 - fix: path resolving when root is `,`

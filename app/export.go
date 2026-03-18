@@ -33,7 +33,19 @@ func (a *App) Export() error {
 		return err
 	}
 
+	if a.Args.Archive {
+		err = a.ExportArchive()
+
+		if err != nil {
+			return err
+		}
+	}
+
 	return nil
+}
+
+func (a *App) ExportArchive() error {
+	return ZipFolder(a.Dist, path.Join(a.Dist, "/content.zip"))
 }
 
 func (a *App) ExportStatic() error {
